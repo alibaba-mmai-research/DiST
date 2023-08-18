@@ -1,0 +1,50 @@
+_BASE: ../hico++_uk400_vit-s.yaml
+OUTPUT_DIR: output/vit-s-uk400-hico++
+
+TRAIN:
+  BATCH_SIZE: 8 # V100 32GB
+
+PRETRAIN:
+  NUM_CLIPS_PER_VIDEO: 12
+  LOSS: HiCoPlusPlusVit
+
+VIDEO:
+  BACKBONE:
+    USE_CLS_TOKEN: true
+    FREEZE_CONV1: true
+    FINAL_NORM: true
+  HEAD:
+    NAME: ContrastiveHeadTopicPredPlusPlus
+
+DATA:
+  DECORD_RESOLUTION_SCALE: 1.0
+  HICO_PLUS_PLUS: 
+    ENABLE: true
+
+HICO:
+  GRAUDAL_SAMPLING:
+    ENABLE: true
+    MAX_DIS: [0.0, 1.5]
+  VCL:
+    ENABLE: false
+    MAX_DIS: 1.0
+  TCL:
+    ENABLE: true
+  LOSS:
+    GAMA: 0.5
+    TCL_WEIGHT: 1.0
+    VCL_WEIGHT: 1.0
+
+OPTIMIZER:
+  BN_LARS_EXCLUDE: true
+  MAX_EPOCH: 200
+  MIN_LR_RATE: 0.0
+
+AUGMENTATION:
+  USE_GPU: false
+
+DATA_LOADER:
+  NUM_WORKERS: 8
+
+OSS:
+  ENABLE: false

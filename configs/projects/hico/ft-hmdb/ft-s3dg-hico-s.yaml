@@ -1,0 +1,4 @@
+_BASE: ../ft_s3dg_hmdb.yaml
+TRAIN:
+  CHECKPOINT_FILE_PATH: /path/to/s3dg-hico-s/checkpoint_epoch_00120.pyth
+OUTPUT_DIR: output/s3dg_hico_ft_hmdb-s

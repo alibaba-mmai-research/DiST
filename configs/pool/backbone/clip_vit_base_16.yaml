@@ -1,0 +1,16 @@
+MODEL:
+  NAME: clip
+
+VIDEO:
+  BACKBONE:
+    META_ARCH: ClipVisionTextTransformer
+    META_ARCH_NAME: ViT-B-16
+    NUM_OUT_FEATURES: 512
+    PRETRAIN_WEIGHT_PATH: /mnt/data/code/open-source/open-source-hico-tpami/HiCo/output/checkpoints/ViT-B-16.pt
+    LOCAL_PRETRAIN_WEIGHT_PATH: /mnt/data/code/open-source/open-source-hico-tpami/HiCo/output/checkpoints/ViT-B-16.pt
+  HEAD:
+    NAME: ClipVideoHeadLinear
+    PRE_LOGITS: false
+    ACTIVATION: softmax
+    DROPOUT_RATE: 0
+    NUM_CLASSES:              # !!!

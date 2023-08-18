@@ -1,0 +1,51 @@
+_BASE_RUN: ../../pool/run/training/finetune.yaml
+_BASE_MODEL: ../../pool/backbone/vit-s.yaml
+
+PRETRAIN:
+  ENABLE: false
+TRAIN:
+  ENABLE: true
+  DATASET: HMDB51
+  CHECKPOINT_FILE_PATH: ""          # !!@2
+  BATCH_SIZE: 64
+  NUM_FOLDS: 30
+TEST:
+  ENABLE: true
+  DATASET: HMDB51
+  BATCH_SIZE: 64
+DATA:
+  DATA_ROOT_DIR: /mnt/data/dataset/hmdb51/videos
+  ANNO_DIR: /mnt/data/dataset/hmdb51/anno/
+  TRAIN_JITTER_SCALES: [0.08, 1.0]
+VIDEO:
+  BACKBONE:
+    DROP_PATH: 0.1
+  HEAD:
+    NUM_CLASSES: 51
+    DROPOUT_RATE: 0.
+OPTIMIZER:
+  BASE_LR: 0.001
+  LR_POLICY: cosine
+  MAX_EPOCH: 300
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 0.05
+  WARMUP_EPOCHS: 10
+  WARMUP_START_LR: 0.00002
+  OPTIM_METHOD: adamw
+  DAMPENING: 0.0
+  NESTEROV: true
+  BIAS_LR_MULT: 10
+  LAYER_LRDECAY:
+    ENABLE: true
+    DECAY_WEIGHT: 0.75
+AUGMENTATION:
+  USE_GPU: false
+  AUTOAUGMENT:
+    ENABLE: true
+    BEFORE_CROP: true
+    TYPE: rand-m9-mstd0.5-inc1
+OSS:
+  ENABLE: false
+
+NUM_GPUS: 8
+PAI: true

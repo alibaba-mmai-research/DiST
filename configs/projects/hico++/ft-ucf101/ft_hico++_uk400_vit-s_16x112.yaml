@@ -1,0 +1,31 @@
+_BASE: ../ft_vit-s_ucf101.yaml
+TRAIN:
+  ONLY_LINEAR: false
+  AUTO_RESUME: false
+  NUM_FOLDS: 10
+  CHECKPOINT_FILE_PATH: '/mnt/data/code/open-source/open-source-hico-tpami/HiCo/output/open-source-cpkts/ViT-S-UK400-HiCo++M6.pyth'
+
+VIDEO:
+  BACKBONE:
+    USE_CLS_TOKEN: true
+    FINAL_NORM: true
+
+OUTPUT_DIR: output/ft_hico++_uk400_ucf101_vit-s_16x112/
+OSS:
+  ENABLE: false
+
+OPTIMIZER:
+  BASE_LR: 0.0006
+  LR_POLICY: cosine
+  MAX_EPOCH: 60
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 0.15
+  WARMUP_EPOCHS: 10
+  WARMUP_START_LR: 0.00002
+  OPTIM_METHOD: adamw
+  DAMPENING: 0.0
+  NESTEROV: true
+  BIAS_LR_MULT: 10
+  LAYER_LRDECAY:
+    ENABLE: true
+    DECAY_WEIGHT: 0.65

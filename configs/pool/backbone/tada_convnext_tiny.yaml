@@ -1,0 +1,29 @@
+MODEL:
+  NAME: ConvNeXt_tiny
+VIDEO:
+  BACKBONE:
+    DEPTH: [3, 3, 9, 3]
+    META_ARCH: ConvNeXt
+    NUM_FILTERS: [96, 192, 384, 768]
+    NUM_INPUT_CHANNELS: 3
+    NUM_OUT_FEATURES: 768
+    DROP_PATH: 0.1
+    LARGE_SCALE_INIT_VALUE: 1e-6
+    STEM:
+      T_KERNEL_SIZE: 3
+      CENTRAL_INIT: true
+    BRANCH:
+      NAME: TAdaConvNeXtBlock
+      ROUTE_FUNC_K: [3, 3]
+      ROUTE_FUNC_R: 4
+      ROUTE_FUNC_TYPE: normal
+    NONLOCAL:
+      ENABLE: false
+      STAGES: [5]
+      MASK_ENABLE: false
+  HEAD:
+    NAME: BaseHead
+    ACTIVATION: softmax
+    DROPOUT_RATE: 0
+    NUM_CLASSES:              # !!!
+

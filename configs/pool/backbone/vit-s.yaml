@@ -1,0 +1,34 @@
+MODEL:
+  NAME: vit_video
+  SYNC_BN: false
+  
+VIDEO:
+  BACKBONE:
+    META_ARCH: VitVideoEncoder
+    NUM_FEATURES: 384
+    NUM_OUT_FEATURES: 384
+    PATCH_SIZE: 16
+    TUBELET_SIZE: 2
+    DEPTH: 12
+    NUM_HEADS: 12
+    # DIM_HEAD: 64
+    ATTN_DROPOUT: 0.0
+    FF_DROPOUT: 0.0
+    DROP_PATH: 0.1
+    MLP_MULT: 4
+    POS_EMBD_LEARNABLE: true
+    FINAL_NORM: false  # from mocov3
+    INIT_APPROACH: xavier
+    USE_CLS_TOKEN: false
+    FREEZE_CONV1: false
+    STEM:
+      NAME: TubeletEmbeddingStem
+    BRANCH:
+      NAME: BaseTransformerLayer
+  HEAD:
+    NAME: TransformerHead
+    ACTIVATION: softmax
+    DROPOUT_RATE: 0
+    NUM_CLASSES:              # !!!
+    PRE_LOGITS: false
+    INIT_STD: 2e-5

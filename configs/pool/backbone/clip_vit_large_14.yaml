@@ -1,0 +1,17 @@
+MODEL:
+  NAME: clip
+
+VIDEO:
+  BACKBONE:
+    META_ARCH: ClipVisionTextTransformer
+    META_ARCH_NAME: ViT-L-14
+    NUM_OUT_FEATURES: 512
+    PROMPT_PREFIX: "a photot of "
+    PRETRAIN_WEIGHT_PATH: /home/admin/workspace/project/code/hico-tpami/pytorch-video-understanding-dev/output/checkpoints/ViT-L-14.pt
+    LOCAL_PRETRAIN_WEIGHT_PATH: /home/admin/workspace/project/code/hico-tpami/pytorch-video-understanding-dev/output/checkpoints/ViT-L-14.pt
+  HEAD:
+    NAME: ClipVideoHeadLinear
+    PRE_LOGITS: false
+    ACTIVATION: softmax
+    DROPOUT_RATE: 0
+    NUM_CLASSES:              # !!!

@@ -1,0 +1,4 @@
+_BASE: ../ft_s3dg_hmdb.yaml
+TRAIN:
+  CHECKPOINT_FILE_PATH: /root/qingzhiwu/qingzhiwu/model/open-source/hico-uk400-s3dg-l.pyth
+OUTPUT_DIR: output/s3dg_hico_ft_hmdb-l

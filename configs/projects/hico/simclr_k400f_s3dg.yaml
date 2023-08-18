@@ -1,0 +1,54 @@
+_BASE_RUN: ../../pool/run/training/simclr.yaml
+_BASE_MODEL: ../../pool/backbone/s3dg.yaml
+PRETRAIN:
+  NUM_CLIPS_PER_VIDEO: 2
+TRAIN:
+  ENABLE: true
+  DATASET: longvideo
+  BATCH_SIZE: 32
+  LOG_FILE: training_log.log
+  EVAL_PERIOD: 0
+  NUM_FOLDS: 10
+  AUTO_RESUME: true
+  CHECKPOINT_PERIOD: 10
+  CHECKPOINT_FILE_PATH: ""          # !!@2
+  CHECKPOINT_TYPE: pytorch
+  CHECKPOINT_INFLATE: false
+  FINE_TUNE: false
+  ONLY_LINEAR: false
+TEST:
+  ENABLE: false
+DATA:
+  DATA_ROOT_DIR: /qingzhiwu/data/k400-full/clip_5s/
+  ANNO_DIR: /qingzhiwu/data/k400-full/
+OSS:
+  ENABLE: false
+BN:
+  SYNC_BN: true
+HICO:
+  GRAUDAL_SAMPLING:
+    ENABLE: false
+    MAX_DIS: [0.0, 1.0]
+  VCL:
+    ENABLE: false
+    MAX_DIS: 1.0
+  TCL:
+    ENABLE: false
+
+OPTIMIZER:
+  BASE_LR: 0.3
+  LR_POLICY: cosine
+  MAX_EPOCH: 120
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 1e-6
+  WARMUP_EPOCHS: 5
+  WARMUP_START_LR: 0.001
+  OPTIM_METHOD: lars
+  DAMPENING: 0.0
+  NESTEROV: true
+  BN_LARS_EXCLUDE: true
+  ADJUST_LR: true
+DATA_LOADER:
+  NUM_WORKERS: 4
+PAI: true
+

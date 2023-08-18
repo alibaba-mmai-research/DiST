@@ -1,0 +1,116 @@
+_BASE_RUN: ../../pool/run/training/from_scratch_large.yaml
+_BASE_MODEL: ../../pool/backbone/clip_vit_base_16.yaml
+
+PRETRAIN:
+  ENABLE: false
+TRAIN:
+  ENABLE: true
+  DATASET: ssv2
+  BATCH_SIZE: 32
+  FINE_TUNE: true
+  CHECKPOINT_FILE_PATH: ""
+  NUM_FOLDS: 10
+  CHECKPOINT_PERIOD: 10
+  AUTO_RESUME: false
+  MIXED_PRECISION: true
+TEST:
+  ENABLE: true
+  DATASET: ssv2
+  BATCH_SIZE: 16
+DATA:
+  DATA_ROOT_DIR: /mnt/data/dataset/ssv2/videos_mp4/
+  ANNO_DIR: /mnt/data/dataset/ssv2/anno/
+  SAMPLING_RATE: 8
+  NUM_INPUT_FRAMES: 8
+  TRAIN_CROP_SIZE: 224
+  TEST_SCALE: 224
+  TEST_CROP_SIZE: 224
+  TRAIN_JITTER_SCALES: [0.08, 1.0]
+  MINUS_INTERVAL: false
+  SAMPLING_MODE: interval_based
+  MEAN: [0.48145466, 0.4578275, 0.40821073]
+  STD: [0.26862954, 0.26130258, 0.27577711]
+  DATASET_LABEL_TEXT: 
+    ENABLE: false
+    PROMPT_PREFIX: ""
+    TEXT_TYPE: labels_only
+
+OSS:
+  ENABLE: false
+
+VIDEO:
+  BACKBONE:
+    FREEZE_TEXT: false
+    ATTEN_BLOCK: ResidualAttentionBlock
+  HEAD:
+    NUM_CLASSES: 174
+    DROPOUT_RATE: 0.5
+DATA_LOADER:
+  NUM_WORKERS: 8
+  PIN_MEMORY: true
+
+OPTIMIZER:
+  BASE_LR: 8e-6
+  MIN_LR: 8e-8
+  ADJUST_LR: false
+  LR_POLICY: cosine
+  MAX_EPOCH: 30
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 0.001
+  WARMUP_EPOCHS: 5
+  WARMUP_START_LR: 8e-8
+  OPTIM_METHOD: adamw
+  DAMPENING: 0.0
+  NESTEROV: true
+  HEAD_LRMULT: 10
+  PROMPT_NET_LRMULT: 10
+  PROMPT_NET_WEIGHT_DECAY: 0.001
+  NEW_NET_LRMULT: 1.0
+  NEW_NET_WEIGHT_DECAY: 0.001
+  BETAS: [0.9, 0.98]
+  LAYER_LRDECAY:
+    ENABLE: false
+    DECAY_WEIGHT: 0.75
+
+AUGMENTATION:
+  COLOR_AUG: false
+  BRIGHTNESS: 0.4
+  CONTRAST: 0.4
+  SATURATION: 0.4
+  HUE: 0.25
+  GRAYSCALE: 0.2
+  CONSISTENT: true
+  SHUFFLE: true
+  GRAY_FIRST: true
+  IS_SPLIT: false
+  USE_GPU: false
+  RATIO: [0.75, 1.333]
+  SSV2_FLIP: true
+  MIXUP: 
+    ENABLE: true
+    ALPHA: 0.8
+    PROB: 1.0
+    MODE: batch
+    SWITCH_PROB: 0.5
+  CUTMIX: 
+    ENABLE: true
+    ALPHA: 1.0
+    MINMAX: 
+  RANDOM_ERASING:
+    ENABLE: false
+    PROB: 0.25
+    MODE: pixel
+    COUNT: [1, 1]
+    NUM_SPLITS: 1
+    AREA_RANGE: [0.02, 0.33]
+    MIN_ASPECT: 0.3
+  LABEL_SMOOTHING: 0.1
+  AUTOAUGMENT:
+    ENABLE: false
+    BEFORE_CROP: true
+    TYPE: rand-m7-n4-mstd0.5-inc1
+  BATCH_AUG:
+    ENABLE: false
+    NUM_CLIPS_PER_VIDEO: 2
+MULTI_CARD: true
+PAI: true

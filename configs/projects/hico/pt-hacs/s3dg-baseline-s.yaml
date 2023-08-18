@@ -1,0 +1,4 @@
+_BASE: ../simclr_hacs_s3dg.yaml
+OUTPUT_DIR: output/s3dg-hacs-simclr-baseline-s
+OPTIMIZER:
+  BN_LARS_EXCLUDE: false

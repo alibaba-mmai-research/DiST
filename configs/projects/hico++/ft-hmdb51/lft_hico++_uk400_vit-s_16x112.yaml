@@ -1,0 +1,14 @@
+_BASE: ../ft_vit_s_hmdb.yaml
+TRAIN:
+  ONLY_LINEAR: true
+  AUTO_RESUME: false
+  ENABLE: true
+  CHECKPOINT_FILE_PATH: '/mnt/data/code/open-source/open-source-hico-tpami/HiCo/output/open-source-cpkts/ViT-S-UK400-HiCo++M6.pyth'
+VIDEO:
+  BACKBONE:
+    USE_CLS_TOKEN: true
+    FINAL_NORM: true
+
+OUTPUT_DIR: output/lft_hico++_uk400_hmdb51_vit-s_16x112/
+OSS:
+  ENABLE: false

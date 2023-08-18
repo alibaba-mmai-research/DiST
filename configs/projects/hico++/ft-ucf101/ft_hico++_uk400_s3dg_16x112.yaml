@@ -1,0 +1,26 @@
+_BASE: ../ft_s3dg_ucf101.yaml
+TRAIN:
+  ONLY_LINEAR: false
+  AUTO_RESUME: false
+  LR_REDUCE: false
+  FINE_TUNE: true
+  CHECKPOINT_FILE_PATH: '/mnt/data/code/open-source/open-source-hico-tpami/HiCo/output/open-source-cpkts/S3DG-UK400-HiCo++M6.pyth'
+
+OPTIMIZER:
+  BASE_LR: 0.00006
+  LR_POLICY: cosine
+  MAX_EPOCH: 300
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 1e-3
+  WARMUP_EPOCHS: 10
+  WARMUP_START_LR: 0.00002
+  OPTIM_METHOD: adam
+  DAMPENING: 0.0
+  NESTEROV: true
+
+OUTPUT_DIR: output/ft_hico++_uk400_ucf101_s3dg_16x112/
+OSS:
+  ENABLE: false
+
+DATA:
+  TRAIN_JITTER_SCALES: [0.08, 1.0]

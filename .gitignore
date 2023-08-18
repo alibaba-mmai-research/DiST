@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+# Copyright (C) Alibaba Group Holding Limited. 
+
+# result file
+output
+current_epoch/
+clear_cpkt.py
+configs/projects/hico++/ft-hmdb51/ft_hico++_uk400_s3dg_32x224_oss.yaml
+# cache
+*__pycache__*
+
+# tmp
+tmp*
+
+# vscode
+.vscode/
+
+# checkpoints
+checkpoints
+
+# notebooks
+*.ipynb
+
+# debug
+debug/
+
+# archived
+archived

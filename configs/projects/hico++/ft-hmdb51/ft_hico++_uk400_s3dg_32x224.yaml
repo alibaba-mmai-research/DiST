@@ -1,0 +1,31 @@
+_BASE: ../ft_s3dg_hmdb.yaml
+TRAIN:
+  ONLY_LINEAR: false
+  AUTO_RESUME: false
+  BATCH_SIZE: 32 # for 8xV100 32GB
+  CHECKPOINT_FILE_PATH: '/mnt/data/code/open-source/open-source-hico-tpami/HiCo/output/open-source-cpkts/S3DG-UK400-HiCo++M6.pyth'
+OPTIMIZER:
+  BASE_LR: 0.0001
+  LR_POLICY: cosine
+  MAX_EPOCH: 300
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 1e-3
+  WARMUP_EPOCHS: 10
+  WARMUP_START_LR: 0.00002
+  OPTIM_METHOD: adam
+  DAMPENING: 0.0
+  NESTEROV: true
+
+DATA:
+  NUM_INPUT_FRAMES: 32
+  SAMPLING_RATE: 2
+  TRAIN_JITTER_SCALES: [168, 224]
+  TRAIN_CROP_SIZE: 224
+  TEST_CROP_SIZE: 224
+
+AUGMENTATION:
+  USE_GPU: false
+
+OUTPUT_DIR: output/ft_hico++_uk400_hmdb51_s3dg_32x224/
+OSS:
+  ENABLE: false

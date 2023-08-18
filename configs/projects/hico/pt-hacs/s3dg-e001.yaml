@@ -1,0 +1,31 @@
+_BASE: ../simclr_hacs_s3dg.yaml
+OUTPUT_DIR: output/s3dg-hacs-simclr-hico-s
+
+PRETRAIN:
+  NUM_CLIPS_PER_VIDEO: 3
+  LOSS: HiCo
+
+VIDEO:
+  HEAD:
+    NAME: ContrastiveHeadTopicPred
+
+HICO:
+  GRAUDAL_SAMPLING:
+    ENABLE: true
+    MAX_DIS: [0.0, 1.0]
+  VCL:
+    ENABLE: false
+    MAX_DIS: 1.0
+  TCL:
+    ENABLE: true
+  LOSS:
+    GAMA: 0.5
+    TCL_WEIGHT: 1.0
+    VCL_WEIGHT: 1.0
+
+OPTIMIZER:
+  BN_LARS_EXCLUDE: false
+
+OSS:
+  ENABLE: true
+  CHECKPOINT_OUTPUT_PATH: oss://qingzhiwu/model/cpkt/projects/hico-tpami/hacs/s3dg/e001/pretrain/
