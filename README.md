@@ -34,6 +34,19 @@ optional requirements
 
 # Model Zoo
 
+| Dataset | architecture |  pre-training | #frames | acc@1 | acc@5 | checkpoint | config |
+| ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
+| SSV2 | ViT-B/16 | CLIP | 8 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-b16-8+16f](configs/projects/dist/ssv2/vit-b16-8+16f.yaml) | 
+| SSV2 | ViT-B/16 | CLIP | 16 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-b16-16+32f](configs/projects/dist/ssv2/vit-b16-16+32f.yaml) | 
+| SSV2 | ViT-B/16 | CLIP | 32 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-b16-32+64f](configs/projects/dist/ssv2/vit-b16-32+64f.yaml) | 
+| SSV2 | ViT-L/14 | CLIP | 32 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-l14-32+64f](configs/projects/dist/ssv2/vit-l14-32+64f.yaml) | 
+
+| K400 | ViT-B/16 | CLIP | 8 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-b16-8+16f](configs/projects/dist/k400/vit-b16-8+16f.yaml) | 
+| K400 | ViT-B/16 | CLIP | 16 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-b16-16+32f](configs/projects/dist/k400/vit-b16-16+32f.yaml) | 
+| K400 | ViT-B/16 | CLIP | 32 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-b16-32+64f](configs/projects/dist/k400/vit-b16-32+64f.yaml) | 
+| K400 | ViT-B/16 | CLIP + K710| 32 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-b16-32+64f](configs/projects/dist/k400/vit-b16-32+64f.yaml) | 
+| K400 | ViT-L/14 | CLIP | 32 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-l14-32+64f](configs/projects/dist/k400/vit-l14-32+64f.yaml) | 
+| K400 | ViT-L/14 | CLIP + K710 | 32 | - | - | [[google drive](https://drive.google.com/file/d/coming)][[baidu](https://pan.baidu.com/s/coming)(code:)] | [vit-l14-32+64f](configs/projects/dist/k400/vit-l14-32+64f.yaml) | 
 We include our pre-trained models in the [MODEL_ZOO.md](MODEL_ZOO.md).
 
 
