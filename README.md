@@ -42,13 +42,9 @@ You can find some pre-trained model in the `MODEL_ZOO.md`.
 
 For detailed explanations on the approach itself, please refer to the [paper](https://openaccess.thecvf.com/content/ICCV2023/papers/).
 
-For an example run, set the `DATA_ROOT_DIR` and `ANNO_DIR` in `configs/projects/hico/simclr_hacs_s3dg.yaml`, and `OUTPUT_DIR` in `configs/projects/hico/pt-hacs/s3dg-hico-s.yaml`, and run the command for the short pre-training(for ablation studies):
+For an example run, set the `DATA_ROOT_DIR` and `ANNO_DIR` in `configs/projects/dist/vit_base_16_ssv2.yaml`, and `OUTPUT_DIR` in `configs/projects/dist/ssv2-cn/vit-b16-8+16f_e001.yaml`, and run the command for fine-tuning:
 ```
-python runs/run.py --cfg configs/projects/hico/pt-hacs/s3dg-hico-s.yaml
-```
-Run this command for the long pre-training:
-```
-python runs/run.py --cfg configs/projects/hico/pt-hacs/s3dg-hico-l.yaml
+python runs/run.py --cfg configs/projects/dist/ssv2-cn/vit-b16-8+16f_e001.yaml
 ```
 
 
