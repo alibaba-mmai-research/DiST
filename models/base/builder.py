@@ -70,6 +70,6 @@ def build_model(cfg, gpu_id=None):
         # Make model replica operate on the current device
         # Support distributed training on the cluster
         model = torch.nn.parallel.DistributedDataParallel(
-            module=model, device_ids=[cur_device], output_device=cur_device
+            module=model, device_ids=[cur_device], output_device=cur_device, find_unused_parameters=True
         )
     return model, model_ema

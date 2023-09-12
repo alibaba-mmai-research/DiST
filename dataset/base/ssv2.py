@@ -107,6 +107,7 @@ class Ssv2(BaseVideoDataset):
             elif self.cfg.AUGMENTATION.COLOR_AUG:
                 std_transform_list.append(
                     ColorJitter(
+                        p=self.cfg.AUGMENTATION.BRIGHTNESS.COLOR_JITTER_P,
                         brightness=self.cfg.AUGMENTATION.BRIGHTNESS,
                         contrast=self.cfg.AUGMENTATION.CONTRAST,
                         saturation=self.cfg.AUGMENTATION.SATURATION,

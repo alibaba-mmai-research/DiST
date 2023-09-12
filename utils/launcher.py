@@ -79,10 +79,5 @@ def run(
             )
     except Exception as e:
         raise e
-    
-    if "VISIBLE_DEVICE_LIST" in os.environ:
-        torch.cuda.set_device(int(os.environ["VISIBLE_DEVICE_LIST"]))
-    else:
-        torch.cuda.set_device(f'cuda:{local_rank}')
-    os.system(f"CUDA_VISIBLE_DEVICES={local_rank}")
+    torch.cuda.set_device(f'cuda:{local_rank}')
     func(cfg)

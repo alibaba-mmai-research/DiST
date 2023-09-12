@@ -55,8 +55,11 @@ def _prepare_data(cfg):
                 cfg.TEST.NUM_ENSEMBLE_VIEWS = 1
                 cfg.TEST.NUM_SPATIAL_CROPS = 3
             if "ssv2" in cfg.TEST.DATASET:
-                cfg.TEST.NUM_ENSEMBLE_VIEWS = 1
-                cfg.TEST.NUM_SPATIAL_CROPS = 3
+                cfg.TEST.NUM_ENSEMBLE_VIEWS = 3
+                cfg.TEST.NUM_SPATIAL_CROPS = 1
+            if cfg.TEST.OVERRIDE_MULTI_SCALE_TEST.ENABLE:
+                cfg.TEST.NUM_ENSEMBLE_VIEWS = cfg.TEST.OVERRIDE_MULTI_SCALE_TEST.NUM_ENSEMBLE_VIEWS
+                cfg.TEST.NUM_SPATIAL_CROPS = cfg.TEST.OVERRIDE_MULTI_SCALE_TEST.NUM_SPATIAL_CROPS
             cfg.TEST.LOG_FILE = "val_{}clipsx{}crops.log".format(
                 cfg.TEST.NUM_ENSEMBLE_VIEWS, cfg.TEST.NUM_SPATIAL_CROPS
             )

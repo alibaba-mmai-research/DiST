@@ -57,8 +57,9 @@ class ColorJitter(object):
         gray_first  (bool): indicates whether or not to put grayscale transform first.
     """
     def __init__(
-        self, brightness=0, contrast=0, saturation=0, hue=0, grayscale=0, consistent=False, shuffle=True, gray_first=True
+        self, p=1.0, brightness=0, contrast=0, saturation=0, hue=0, grayscale=0, consistent=False, shuffle=True, gray_first=True
     ):
+        self.p = p
         self.brightness = self._check_input(brightness, 'brightness')
         self.contrast = self._check_input(contrast, 'contrast')
         self.saturation = self._check_input(saturation, 'saturation')
@@ -99,35 +100,36 @@ class ColorJitter(object):
             saturation in a random order.
         """
         transforms = []
-        if self.brightness is not None:
+        perform_color_jitter = random.uniform(0, 1) < self.p
+        if self.brightness is not None and perform_color_jitter:
             if self.consistent:
                 brightness_factor = random.uniform(self.brightness[0], self.brightness[1])
             else:
                 brightness_factor = torch.empty([1, T, 1, 1], device=device).uniform_(self.brightness[0], self.brightness[1])
             transforms.append(Lambda(lambda frame: adjust_brightness(frame, brightness_factor)))
         
-        if self.contrast is not None:
+        if self.contrast is not None and perform_color_jitter:
             if self.consistent:
                 contrast_factor = random.uniform(self.contrast[0], self.contrast[1])
             else:
                 contrast_factor = torch.empty([1, T, 1, 1], device=device).uniform_(self.contrast[0], self.contrast[1])
             transforms.append(Lambda(lambda frame: adjust_contrast(frame, contrast_factor)))
         
-        if self.saturation is not None:
+        if self.saturation is not None and perform_color_jitter:
             if self.consistent:
                 saturation_factor = random.uniform(self.saturation[0], self.saturation[1])
             else:
                 saturation_factor = torch.empty([1, T, 1, 1], device=device).uniform_(self.saturation[0], self.saturation[1])
             transforms.append(Lambda(lambda frame: adjust_saturation(frame, saturation_factor)))
         
-        if self.hue is not None:
+        if self.hue is not None and perform_color_jitter:
             if self.consistent:
                 hue_factor = random.uniform(self.hue[0], self.hue[1])
             else:
                 hue_factor = torch.empty([T, 1, 1], device=device).uniform_(self.hue[0], self.hue[1])
             transforms.append(Lambda(lambda frame: adjust_hue(frame, hue_factor)))
 
-        if self.shuffle:
+        if self.shuffle and perform_color_jitter:
             random.shuffle(transforms)
         
         if random.uniform(0, 1) < self.grayscale:

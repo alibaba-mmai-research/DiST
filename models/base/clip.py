@@ -273,8 +273,6 @@ class VisionTransformer(nn.Module):
         x = x.permute(0, 2, 1)  # shape = [*, grid ** 2, width]
         x = torch.cat([self.class_embedding.to(x.dtype) + torch.zeros(x.shape[0], 1, x.shape[-1], dtype=x.dtype, device=x.device), x], dim=1)  # shape = [*, grid ** 2 + 1, width]
         x = x + self.positional_embedding.to(x.dtype)
-        if others is not None and 'temporal_prompt' in others:
-            x = torch.cat([x, others['temporal_prompt']], dim=1)
         x = self.ln_pre(x)
 
         x = x.permute(1, 0, 2)  # NLD -> LND
@@ -320,36 +318,22 @@ class CLIP(nn.Module):
                  ):
         super().__init__()
         self.cfg = cfg
-        self.text_conditioned_temporal_net = ('text_conditioned' in cfg.VIDEO.BACKBONE.TEMPORAL_NET.NAME or 'TextConditioned' in cfg.VIDEO.BACKBONE.TEMPORAL_NET.NAME) and cfg.VIDEO.BACKBONE.TEMPORAL_NET.ENABLE  if hasattr(cfg.VIDEO.BACKBONE, "TEMPORAL_NET") else False
         self.context_length = context_length
         self.num_frames = cfg.DATA.NUM_INPUT_FRAMES
         self.freeze_text = cfg.VIDEO.BACKBONE.FREEZE_TEXT
         self.freeze_visual = cfg.VIDEO.BACKBONE.FREEZE_VISUAL
         self.num_classes = cfg.VIDEO.HEAD.NUM_CLASSES
-        self.record_text_mid_feat = cfg.VIDEO.BACKBONE.RECORD_TEXT_MID_FEAT
         self.record_vis_mid_feat = cfg.VIDEO.BACKBONE.RECORD_VIS_MID_FEAT
         self.zero_shot_test = cfg.TEST.ZEROSHOT.ENABLE if hasattr(cfg.TEST, 'ZEROSHOT') else False
         self.cache_text_feat = None
-        self.prediction_fusion_enable = hasattr(cfg.VIDEO.BACKBONE, "PRED_FUSION") and cfg.VIDEO.BACKBONE.PRED_FUSION.ENABLE
-        self.prediction_fusion_gating_enable = hasattr(cfg.VIDEO.BACKBONE, "PRED_FUSION") and cfg.VIDEO.BACKBONE.PRED_FUSION.GATING
-        self.prediction_fusion_gating_temp = hasattr(cfg.VIDEO.BACKBONE, "PRED_FUSION") and cfg.VIDEO.BACKBONE.PRED_FUSION.GATING_TEMP
         self.meta_arch_name = cfg.VIDEO.BACKBONE.META_ARCH_NAME
         self.text_features = None
         self.text_logits = None
-        if hasattr(cfg.VIDEO.BACKBONE, 'PRE_COMPUTED_TEXT_WEIGHT') and cfg.VIDEO.BACKBONE.PRE_COMPUTED_TEXT_WEIGHT.ENABLE:
-            self.text_features = nn.Parameter(torch.zeros(self.num_classes, cfg.VIDEO.BACKBONE.PRE_COMPUTED_TEXT_WEIGHT.EMBED_DIM), requires_grad=False)
         if hasattr(cfg.DATA, 'SPARSE_SAMPLE_ALPHA'):
             self.slow_sparse_sample_alpha = cfg.DATA.SPARSE_SAMPLE_ALPHA
         else:
             self.slow_sparse_sample_alpha = 1
-        if self.meta_arch_name.startswith("SLIP"):
-            from models.base.slip import vit_base_patch16_224, vit_large_patch16_224
-            if self.meta_arch_name == 'SLIP-ViT-B-16':
-                self.visual = vit_base_patch16_224(cfg)
-            elif self.meta_arch_name == 'SLIP-ViT-L-16':
-                self.visual = vit_large_patch16_224(cfg)
-            self.image_projection = nn.Parameter(torch.empty(vision_width, embed_dim))
-        elif isinstance(vision_layers, (tuple, list)):
+        if isinstance(vision_layers, (tuple, list)):
             vision_heads = vision_width * 32 // 64
             self.visual = ModifiedResNet(
                 cfg,
@@ -358,28 +342,6 @@ class CLIP(nn.Module):
                 heads=vision_heads,
                 input_resolution=image_resolution,
                 width=vision_width
-            )
-        elif hasattr(cfg.VIDEO.BACKBONE, 'SLOWFAST'):
-            vision_heads = vision_width // 64
-            self.visual = VisionTransformerSlowFast(
-                cfg,
-                input_resolution=image_resolution,
-                patch_size=vision_patch_size,
-                width=vision_width,
-                layers=vision_layers,
-                heads=vision_heads,
-                output_dim=embed_dim
-            )
-        elif hasattr(cfg.VIDEO.BACKBONE, 'LGD'):
-            vision_heads = vision_width // 64
-            self.visual = VisionTransformerLGD(
-                cfg,
-                input_resolution=image_resolution,
-                patch_size=vision_patch_size,
-                width=vision_width,
-                layers=vision_layers,
-                heads=vision_heads,
-                output_dim=embed_dim
             )
         else:
             vision_heads = vision_width // 64
@@ -394,7 +356,6 @@ class CLIP(nn.Module):
             )
         from models.module_zoo.branches.dist import DiSTNetwork
         self.dist_net = DiSTNetwork(cfg, d_model=vision_width, width=vision_width, output_dim=embed_dim)
-        self.use_text = cfg.VIDEO.BACKBONE.USE_TEXT if hasattr(cfg.VIDEO.BACKBONE, "USE_TEXT") else True
         self.transformer = Transformer(
             width=transformer_width,
             layers=transformer_layers,
@@ -409,21 +370,9 @@ class CLIP(nn.Module):
         self.text_projection = nn.Parameter(torch.empty(transformer_width, embed_dim))
         self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / 0.07))
 
-        if self.prediction_fusion_gating_enable:
-            self.prediction_fusion_gating = nn.Parameter(torch.ones([]) * 0.0)
-
         self.initialize_parameters()
 
     def initialize_parameters(self):
-        if hasattr(self, "text_prompt_token_embedding"):
-            nn.init.normal_(self.text_prompt_token_embedding, std=0.02)
-        if hasattr(self, "class_text_prompt_token_embedding"):
-            nn.init.normal_(self.class_text_prompt_token_embedding, std=0.02)
-        if hasattr(self, "temporal_text_prompt_token_embedding"):
-            nn.init.normal_(self.temporal_text_prompt_token_embedding, std=0.02)
-            # nn.init.normal_(self.text_prompt_positional_embedding, std=0.01)
-        if hasattr(self, "visual_feat_pool"):
-            nn.init.normal_(self.visual_feat_pool, std=0.02)
         nn.init.normal_(self.token_embedding.weight, std=0.02)
         nn.init.normal_(self.positional_embedding, std=0.01)
 
@@ -451,8 +400,6 @@ class CLIP(nn.Module):
 
         if self.text_projection is not None:
             nn.init.normal_(self.text_projection, std=self.transformer.width ** -0.5)
-        if hasattr(self, 'image_projection'):
-            nn.init.normal_(self.image_projection, std=self.transformer.width ** -0.5)
 
     def build_attention_mask(self):
         # lazily create causal attention mask, with full attention between the vision tokens
@@ -464,69 +411,28 @@ class CLIP(nn.Module):
 
     @property
     def dtype(self):
-        if self.meta_arch_name.startswith("SLIP"):
-            return self.visual.patch_embed.proj.weight.dtype
-        else:
-            return self.visual.conv1.weight.dtype
+        return self.visual.conv1.weight.dtype
 
     def encode_image(self, image, others=None):
         return self.visual(image.type(self.dtype), others)
 
-    def encode_text(self, text, others, prompt_embedding=None, prompt_embedding_size=None):
+    def encode_text(self, text, others):
         x = self.token_embedding(text).type(self.dtype)  # [batch_size, n_ctx, d_model]
-        if prompt_embedding is not None:
-            x = torch.cat([x[:, :1, :], prompt_embedding.repeat(x.size(0), 1, 1), x[:, 1:, :]], dim=1)[:, :self.context_length, :]
-        elif hasattr(self, "text_prompt_token_embedding"):
-            prompt_embedding = self.text_prompt_token_embedding.type(self.dtype)
-            x = torch.cat([x[:, :1, :], prompt_embedding.repeat(x.size(0), 1, 1), x[:, 1:, :]], dim=1)[:, :self.context_length, :]
         x = x + self.positional_embedding.type(self.dtype)
 
-        if self.record_text_mid_feat:
-            if others is None:
-                others = {}
-            others['mid_feat'] = {}
-            others['mid_feat']['text'] = {}
         x = x.permute(1, 0, 2)  # NLD -> LND
         x, others = self.transformer(x, others)
         x = x.permute(1, 0, 2)  # LND -> NLD
 
-        if self.record_text_mid_feat:
-            if hasattr(self, 'text_prompt_size'):
-                others['mid_feat']['text']['index'] = text.argmax(dim=-1) + self.text_prompt_size
-            elif prompt_embedding_size is not None:
-                others['mid_feat']['text']['index'] = text.argmax(dim=-1) + prompt_embedding_size
-            else:
-                others['mid_feat']['text']['index'] = text.argmax(dim=-1)
-            # for i in range(len(others['mid_feat']['text'])):
-            #     others['mid_feat']['text'][i] = others['mid_feat']['text'][i][torch.arange(x.shape[0]), text.argmax(dim=-1)]
-
         # x.shape = [batch_size, n_ctx, transformer.width]
         # take features from the eot embedding (eot_token is the highest number in each sequence)
-        if hasattr(self, "text_prompt_token_embedding"):
-            x_logits = x[torch.arange(x.shape[0]), text.argmax(dim=-1) + self.text_prompt_size]
-        elif prompt_embedding_size is not None:
-            x_logits = x[torch.arange(x.shape[0]), text.argmax(dim=-1) + prompt_embedding_size]
-        else:
-            x_logits = x[torch.arange(x.shape[0]), text.argmax(dim=-1)]
-        if hasattr(self, "text_cross_transformer"):
-            x = self.text_cross_transformer(x_logits[:self.num_classes, None, :], x_logits[-self.num_classes:, None, :], x_logits[-self.num_classes:, None, :]).squeeze(1)
-        else:
-            x = x_logits
+        x_logits = x[torch.arange(x.shape[0]), text.argmax(dim=-1)]
+
+        x = x_logits
         x = self.ln_final(x).type(self.dtype)
         x = x @ self.text_projection
 
         return x, x_logits, others
-
-    # def cache_text(self, text):
-    #     if self.cache_text_feat is None:
-    #         self.transformer.eval()
-    #         self.ln_final.eval()
-    #         with torch.no_grad():
-    #             text_features, text_logits = self.encode_text(text)
-    #         self.cache_text_feat = (text_features, text_logits)
-    #         self.transformer.train()
-    #         self.ln_final.train()
-    #     return self.cache_text_feat
 
     def cache_text(self, text, others):
         if others is not None and 'label_embeddings' in others:
@@ -593,8 +499,6 @@ class CLIP(nn.Module):
             img_cls_tokens, img_logits, img_features, others = self.cache_visual(image, others=others)
         else:
             img_cls_tokens, img_logits, img_features, others = self.encode_image(image, others=others)
-        if self.meta_arch_name.startswith("SLIP"):
-            img_cls_tokens = img_cls_tokens @ self.image_projection
         img_cls_tokens_ori = img_cls_tokens
         if hasattr(self, 'dist_net'):
             # temporal_text_features = torch.zeros((self.num_classes, 512), device=image.device)
@@ -602,27 +506,7 @@ class CLIP(nn.Module):
             others['images'] = image
             img_cls_tokens, others = self.dist_net(others)
             cls_text_features = others['text_features']
-        if isinstance(img_cls_tokens, list):
-            verb_cls_tokens = img_cls_tokens[0] / img_cls_tokens[0].norm(dim=1, keepdim=True)
-            verb_text_features = cls_text_features[: self.num_classes[0]] / cls_text_features[: self.num_classes[0]].norm(dim=1, keepdim=True)
-            verb_text_features = verb_text_features.type(verb_cls_tokens.dtype)
-
-            noun_cls_tokens = img_cls_tokens[1] / img_cls_tokens[1].norm(dim=1, keepdim=True)
-            noun_text_features = cls_text_features[self.num_classes[0]:] / cls_text_features[self.num_classes[0]:].norm(dim=1, keepdim=True)
-            noun_text_features = noun_text_features.type(noun_cls_tokens.dtype)
-            
-            logit_scale = self.logit_scale.exp()
-            verb_logits_per_image = logit_scale * verb_cls_tokens @ verb_text_features.t()
-            noun_logits_per_image = logit_scale * noun_cls_tokens @ noun_text_features.t()
-            logits_per_image = {"verb_class": verb_logits_per_image, "noun_class": noun_logits_per_image}
-            logits_per_text = None
-        elif len(img_cls_tokens.size()) == 3:
-            img_cls_tokens = img_cls_tokens / img_cls_tokens.norm(dim=1, keepdim=True)
-            cls_text_features = cls_text_features / cls_text_features.norm(dim=1, keepdim=True)
-            logit_scale = self.logit_scale.exp()
-            logits_per_image = logit_scale * (img_cls_tokens * cls_text_features[None, ...]).sum(dim=-1)
-            logits_per_text = None
-        elif cls_text_features is not None:
+        if cls_text_features is not None:
             # normalized features
             img_cls_tokens = img_cls_tokens / img_cls_tokens.norm(dim=1, keepdim=True)
             cls_text_features = cls_text_features / cls_text_features.norm(dim=1, keepdim=True)
@@ -631,9 +515,6 @@ class CLIP(nn.Module):
             # cosine similarity as logits
             logit_scale = self.logit_scale.exp()
             logits_per_image = logit_scale * img_cls_tokens @ cls_text_features.t()
-            # if logits_per_image.size(-1) != self.num_classes:
-            #     num_prototype = logits_per_image.size(-1) // self.num_classes
-            #     logits_per_image = logits_per_image.softmax(dim=-1).view(logits_per_image.size(0), self.num_classes, num_prototype).sum(dim=-1)
             logits_per_text = logits_per_image.t()
             if (self.zero_shot_test and not self.training) or self.prediction_fusion_enable:
                 img_cls_tokens_ori = img_cls_tokens_ori / img_cls_tokens_ori.norm(dim=1, keepdim=True)
@@ -740,23 +621,11 @@ def load(cfg):
     if model_path.startswith("oss:"):
         from utils.checkpoint import download_model_from_bucket
         model_path = download_model_from_bucket(cfg, model_path)
-    if cfg.VIDEO.BACKBONE.META_ARCH_NAME.startswith('SLIP'):
+    if oss_model_path.endswith('.pyth'):
         state_dict = torch.load(model_path, map_location="cpu")
-        clip_model = build_slip_model(cfg, state_dict)
     else:
-        if oss_model_path.endswith('.pyth'):
-            state_dict = torch.load(model_path, map_location="cpu")
-        else:
-            state_dict = torch.jit.load(model_path, map_location="cpu").state_dict()
-        clip_model = build_model(cfg, state_dict)
-        if hasattr(cfg.VIDEO.BACKBONE, 'LADDER_WEIGHT_PATH') and len(cfg.VIDEO.BACKBONE.LADDER_WEIGHT_PATH) > 0:
-            model_path = cfg.VIDEO.BACKBONE.LADDER_WEIGHT_PATH
-            if model_path.startswith("oss:"):
-                from utils.checkpoint import download_model_from_bucket
-                model_path = download_model_from_bucket(cfg, model_path)
-            state_dict = torch.jit.load(model_path, map_location="cpu").state_dict()
-            ladder_model = build_model(cfg, state_dict)
-            clip_model.construct_ladder_net(ladder_model)
+        state_dict = torch.jit.load(model_path, map_location="cpu").state_dict()
+    clip_model = build_model(cfg, state_dict)
     return clip_model
 
 

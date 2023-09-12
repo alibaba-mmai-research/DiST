@@ -221,7 +221,7 @@ class Config(object):
 
 
             if len(key_split) == 1:
-                cfg[key_split[0]] = vals[idx]
+                cfg[key_split[0]] = type(cfg[key_split[0]])(vals[idx])
             elif len(key_split) == 2:
                 cfg[key_split[0]][key_split[1]] = vals[idx]
             elif len(key_split) == 3:

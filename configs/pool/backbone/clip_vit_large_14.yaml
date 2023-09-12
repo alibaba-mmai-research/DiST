@@ -3,6 +3,7 @@ MODEL:
 
 VIDEO:
   BACKBONE:
+    FREEZE_TEXT: true
     META_ARCH: ClipVisionTextTransformer
     META_ARCH_NAME: ViT-L-14
     NUM_OUT_FEATURES: 512
