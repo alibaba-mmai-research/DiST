@@ -46,11 +46,10 @@ optional requirements
 | K400 | ViT-L/14 | CLIP | 32 | 88.0 | 97.9 | [[google drive](https://drive.google.com/file/d/coming)] | [vit-l14-32+64f](configs/projects/dist/k400/vit-l14-32+64f.yaml) | 
 | K400 | ViT-L/14 | CLIP + K710 | 32 | 89.6 | 98.4 | [[google drive](https://drive.google.com/file/d/1-0lDGDQFHW7BF2wSuvqBrQ6r5bXUrXTh/view?usp=sharing)] | [vit-l14-32+64f](configs/projects/dist/k400/vit-l14-32+64f.yaml) | 
 
-We include our pre-trained models in the [MODEL_ZOO.md](MODEL_ZOO.md).
 
 
 # Running instructions
-You can find some pre-trained model in the `MODEL_ZOO.md`.
+You can find some pre-trained models in the `Model Zoo`.
 
 For detailed explanations on the approach itself, please refer to the [paper](https://openaccess.thecvf.com/content/ICCV2023/papers/).
 
@@ -58,6 +57,7 @@ For an example run, set the `DATA_ROOT_DIR` and `ANNO_DIR` in `configs/projects/
 ```
 python runs/run.py --cfg configs/projects/dist/ssv2-cn/vit-b16-8+16f_e001.yaml
 ```
+We use 8 Nvidia V100 GPUs for fine-tuning, and each GPU contains 32 video clips.
 
 
 
