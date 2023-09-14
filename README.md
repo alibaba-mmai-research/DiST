@@ -61,7 +61,7 @@ We use 8 Nvidia V100 GPUs for fine-tuning, and each GPU contains 32 video clips.
 
 
 
-# Citing HiCo
+# Citing DiST
 If you find DiST useful for your research, please consider citing the paper as follows:
 ```BibTeX
 @inproceedings{qing2023dist,
