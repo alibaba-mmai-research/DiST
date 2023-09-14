@@ -38,13 +38,13 @@ optional requirements
 | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
 | SSV2 | ViT-B/16 | CLIP | 8 | 68.7 | - | [[google drive](https://drive.google.com/file/d/coming)] | [vit-b16-8+16f](configs/projects/dist/ssv2/vit-b16-8+16f.yaml) | 
 | SSV2 | ViT-B/16 | CLIP | 16 | 70.2 | - | [[google drive](https://drive.google.com/file/d/coming)] | [vit-b16-16+32f](configs/projects/dist/ssv2/vit-b16-16+32f.yaml) | 
-| SSV2 | ViT-B/16 | CLIP | 32 | 70.9 | - | [[google drive](https://drive.google.com/file/d/coming)] | [vit-b16-32+64f](configs/projects/dist/ssv2/vit-b16-32+64f.yaml) | 
-| SSV2 | ViT-L/14 | CLIP | 32 | 73.1 | - | [[google drive](https://drive.google.com/file/d/coming)] | [vit-l14-32+64f](configs/projects/dist/ssv2/vit-l14-32+64f.yaml) | 
-| K400 | ViT-B/16 | CLIP | 8 | 83.6 | - | [[google drive](https://drive.google.com/file/d/coming)] | [vit-b16-8+16f](configs/projects/dist/k400/vit-b16-8+16f.yaml) | 
-| K400 | ViT-B/16 | CLIP | 16 | 84.4 | - | [[google drive](https://drive.google.com/file/d/coming)] | [vit-b16-16+32f](configs/projects/dist/k400/vit-b16-16+32f.yaml) | 
-| K400 | ViT-B/16 | CLIP | 32 | 85.0 | - | [[google drive](https://drive.google.com/file/d/coming)] | [vit-b16-32+64f](configs/projects/dist/k400/vit-b16-32+64f.yaml) | 
+| SSV2 | ViT-B/16 | CLIP | 32 | 70.9 | - | [[google drive](https://drive.google.com/file/d/1XZRmepoBEzkIBmZxPfoQzBNcNEZhXS-O/view?usp=sharing)] | [vit-b16-32+64f](configs/projects/dist/ssv2/vit-b16-32+64f.yaml) | 
+| SSV2 | ViT-L/14 | CLIP | 32 | 73.1 | - | [[google drive](https://drive.google.com/file/d/1h8mkxuMgFh3cWuNucv7R0KvvBM48buI9/view?usp=sharing)] | [vit-l14-32+64f](configs/projects/dist/ssv2/vit-l14-32+64f.yaml) | 
+| K400 | ViT-B/16 | CLIP | 8 | 83.6 | - | [[google drive](https://drive.google.com/file/d/1NNgk8wf4-OCrw5d9Mjce232uvDSPJsw1/view?usp=sharing)] | [vit-b16-8+16f](configs/projects/dist/k400/vit-b16-8+16f.yaml) | 
+| K400 | ViT-B/16 | CLIP | 16 | 84.4 | - | [[google drive](https://drive.google.com/file/d/12_si0D6XY_8P6QYKrLIJAa864zr2b_-K/view?usp=sharing)] | [vit-b16-16+32f](configs/projects/dist/k400/vit-b16-16+32f.yaml) | 
+| K400 | ViT-B/16 | CLIP | 32 | 85.0 | - | [[google drive](https://drive.google.com/file/d/1XTc8tjjrQGjj_cyHB6gquduAQFeBwJbY/view?usp=sharing)] | [vit-b16-32+64f](configs/projects/dist/k400/vit-b16-32+64f.yaml) | 
 | K400 | ViT-L/14 | CLIP | 32 | 88.0 | - | [[google drive](https://drive.google.com/file/d/coming)] | [vit-l14-32+64f](configs/projects/dist/k400/vit-l14-32+64f.yaml) | 
-| K400 | ViT-L/14 | CLIP + K710 | 32 | 89.6 | - | [[google drive](https://drive.google.com/file/d/coming)] | [vit-l14-32+64f](configs/projects/dist/k400/vit-l14-32+64f.yaml) | 
+| K400 | ViT-L/14 | CLIP + K710 | 32 | 89.6 | - | [[google drive](https://drive.google.com/file/d/1-0lDGDQFHW7BF2wSuvqBrQ6r5bXUrXTh/view?usp=sharing)] | [vit-l14-32+64f](configs/projects/dist/k400/vit-l14-32+64f.yaml) | 
 
 We include our pre-trained models in the [MODEL_ZOO.md](MODEL_ZOO.md).
 
