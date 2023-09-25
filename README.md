@@ -1,7 +1,7 @@
 # Disentangling Spatial and Temporal Learning for Efficient Image-to-Video Transfer Learning
 [Zhiwu Qing](https://scholar.google.com/citations?user=q9refl4AAAAJ&hl=zh-CN&authuser=1), [Shiwei Zhang](https://www.researchgate.net/profile/Shiwei-Zhang-14), [Ziyuan Huang](https://huang-ziyuan.github.io/), [Yingya Zhang], [Changxin Gao](https://scholar.google.com/citations?user=4tku-lwAAAAJ&hl=zh-CN),
 [Deli Zhao],  [Nong Sang](https://scholar.google.com/citations?user=ky_ZowEAAAAJ&hl=zh-CN) <br/>
-In ICCV, 2023. [[Paper]](https://openaccess.thecvf.com/content/ICCV2023/papers/coming_soon.pdf).
+In ICCV, 2023. [[Paper]](https://arxiv.org/pdf/2309.07911).
 
 <br/>
 <div align="center">
